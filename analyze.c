@@ -4,11 +4,37 @@
 
 void analyzeURL(char* url,char* host,int* port,char* doc)
 {
-   /* TODO Q1: Parse the URL - Implement the URL decomposition.
-    * input: URL the given url
-      output: host : where you place the host part of the URL
-              port : where you place the port number (if any)
-              doc  : where you place the document name
-    * hint: scan the url for special character such as : and /. These characters mark the beginning and end of the above variables.
-   */
+   char fullCopy[1024];
+    strncpy(fullCopy, url, 1023);
+    fullCopy[1023] = '\0';
+
+    char* workingPtr = fullCopy;
+
+    if (strncmp(workingPtr, "http://", 7) == 0) {
+        workingPtr += 7;
+    }
+
+    char leftover[1024];
+    strncpy(leftover, workingPtr, 1023);
+    leftover[1023] = '\0';
+
+    char* slashPosition = strchr(leftover, '/');
+    if (slashPosition != NULL) {
+        strcpy(doc, slashPosition);
+        *slashPosition = '\0';
+    } else {
+        strcpy(doc, "/");
+    }
+
+    char* colonPointer = strchr(leftover, ':');
+    if (colonPointer != NULL) {
+        *colonPointer = '\0';
+        strcpy(host, leftover);
+        char* portString = colonPointer + 1;
+        if (*portString != '\0') {
+            *port = atoi(portString);
+        }
+    } else {
+        strcpy(host, leftover);
+    }
 }
